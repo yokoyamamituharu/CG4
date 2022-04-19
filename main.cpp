@@ -39,6 +39,8 @@ using namespace DirectX;
 
 using namespace Microsoft::WRL;
 
+#include"fbxsdk.h"
+
 //立方体の当たり判定
 bool CubeCollision(XMFLOAT3 object1, XMFLOAT3 radius1, XMFLOAT3 object2, XMFLOAT3 radius2) {
 	float disX1 = object1.x + radius1.x;
@@ -58,7 +60,7 @@ bool CubeCollision(XMFLOAT3 object1, XMFLOAT3 radius1, XMFLOAT3 object2, XMFLOAT
 	return disX1 > disX2 && disX4 > disX3 && disY1 > disY2 && disY4 > disY3 && disZ1 > disZ2 && disZ4 > disZ3;
 }
 
-
+#pragma region スプライト
 //テクスチャの最大枚数
 const int spriteSRVCount = 512;
 
@@ -495,11 +497,12 @@ void SpriteDraw(const Sprite &sprite, ID3D12GraphicsCommandList *cmdList, const 
 	//ポリゴンの描画（4頂点で四角形）
 	cmdList->DrawInstanced(4, 1, 0, 0);
 }
-
+#pragma endregion
 
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
 	HRESULT result;
+	FbxManager* fbxManager = FbxManager::Create();
 #pragma region 初期化処理
 
 	// DirectX初期化処理　ここから
