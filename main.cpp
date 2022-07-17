@@ -35,11 +35,14 @@ using namespace DirectX;
 #include"Input.h"
 #include "WinApp.h"
 #include"DirectXCommon.h"
-#include"Object3d.h"
+#include"OBJobject.h"
 
 using namespace Microsoft::WRL;
 
 #include"fbxsdk.h"
+#include"FbxLoader.h"
+#include "Camera.h"
+#include "FBXObject.h"
 
 //立方体の当たり判定
 bool CubeCollision(XMFLOAT3 object1, XMFLOAT3 radius1, XMFLOAT3 object2, XMFLOAT3 radius2) {
@@ -127,7 +130,7 @@ struct SpriteCommon
 };
 
 //スプライト単体頂点バッファの転送
-void SpriteTransferVertexBuffer(const Sprite &sprite)
+void SpriteTransferVertexBuffer(const Sprite& sprite)
 {
 	HRESULT result = S_FALSE;
 
@@ -148,14 +151,14 @@ void SpriteTransferVertexBuffer(const Sprite &sprite)
 	vertices[RT].pos = { sprite.size.x,0.0f,0.0f };//右上
 
 	//頂点バッファへのデータ転送
-	VertexPosUv *vertMap = nullptr;
-	result = sprite.vertBuff->Map(0, nullptr, (void **)&vertMap);
+	VertexPosUv* vertMap = nullptr;
+	result = sprite.vertBuff->Map(0, nullptr, (void**)&vertMap);
 	memcpy(vertMap, vertices, sizeof(vertices));
 	sprite.vertBuff->Unmap(0, nullptr);
 }
 
 //スプライト用パイプライン生成関数
-PipelineSet SpriteCreateGraphicsPipeline(ID3D12Device *dev)
+PipelineSet SpriteCreateGraphicsPipeline(ID3D12Device* dev)
 {
 	//ローカルのresultを生成する
 	HRESULT result;
@@ -219,7 +222,7 @@ PipelineSet SpriteCreateGraphicsPipeline(ID3D12Device *dev)
 
 	//ブレンドステートの設定
 	//レンダーターゲットのブレンド設定
-	D3D12_RENDER_TARGET_BLEND_DESC &blenddesc = gpipeline.BlendState.RenderTarget[0];
+	D3D12_RENDER_TARGET_BLEND_DESC& blenddesc = gpipeline.BlendState.RenderTarget[0];
 	blenddesc.RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 
 
@@ -285,7 +288,7 @@ PipelineSet SpriteCreateGraphicsPipeline(ID3D12Device *dev)
 }
 
 //スプライト共通データ生成
-SpriteCommon SpriteCommonCreate(ID3D12Device *dev, int window_width, int window_height)
+SpriteCommon SpriteCommonCreate(ID3D12Device* dev, int window_width, int window_height)
 {
 	HRESULT result = S_FALSE;
 
@@ -311,7 +314,7 @@ SpriteCommon SpriteCommonCreate(ID3D12Device *dev, int window_width, int window_
 }
 
 //スプライト生成
-Sprite SpriteCreate(ID3D12Device *dev, int window_width, int window_height, UINT texNumber, const SpriteCommon &spriteCommon)
+Sprite SpriteCreate(ID3D12Device* dev, int window_width, int window_height, UINT texNumber, const SpriteCommon& spriteCommon)
 {
 	HRESULT result = S_FALSE;
 
@@ -348,8 +351,8 @@ Sprite SpriteCreate(ID3D12Device *dev, int window_width, int window_height, UINT
 	SpriteTransferVertexBuffer(sprite);
 
 	//頂点バッファへのデータ転送
-	VertexPosUv *vertMap = nullptr;
-	result = sprite.vertBuff->Map(0, nullptr, (void **)&vertMap);
+	VertexPosUv* vertMap = nullptr;
+	result = sprite.vertBuff->Map(0, nullptr, (void**)&vertMap);
 	memcpy(vertMap, vertices, sizeof(vertices));
 	sprite.vertBuff->Unmap(0, nullptr);
 
@@ -367,8 +370,8 @@ Sprite SpriteCreate(ID3D12Device *dev, int window_width, int window_height, UINT
 		IID_PPV_ARGS(&sprite.constBuff));
 
 	// 定数バッファにデータ転送
-	ConstBufferData *constMap = nullptr;
-	result = sprite.constBuff->Map(0, nullptr, (void **)&constMap);
+	ConstBufferData* constMap = nullptr;
+	result = sprite.constBuff->Map(0, nullptr, (void**)&constMap);
 	constMap->color = XMFLOAT4(1, 1, 1, 1); //色指定(RGBA)
 	//平行投影行列
 	constMap->mat = XMMatrixOrthographicOffCenterLH(
@@ -379,7 +382,7 @@ Sprite SpriteCreate(ID3D12Device *dev, int window_width, int window_height, UINT
 }
 
 //スプライト共通テクスチャ読み込み
-void SpriteCommonLoadTexture(SpriteCommon &spriteCommon, UINT texnumber, const wchar_t *filename, ID3D12Device *dev)
+void SpriteCommonLoadTexture(SpriteCommon& spriteCommon, UINT texnumber, const wchar_t* filename, ID3D12Device* dev)
 {
 	//異常な番号の指定を検出
 	assert(texnumber <= spriteSRVCount - 1);
@@ -395,7 +398,7 @@ void SpriteCommonLoadTexture(SpriteCommon &spriteCommon, UINT texnumber, const w
 		WIC_FLAGS_NONE,
 		&metadata, scratchImg);
 
-	const Image *img = scratchImg.GetImage(0, 0, 0);	//生データー抽出
+	const Image* img = scratchImg.GetImage(0, 0, 0);	//生データー抽出
 
 
 	//リソース設定
@@ -445,7 +448,7 @@ void SpriteCommonLoadTexture(SpriteCommon &spriteCommon, UINT texnumber, const w
 }
 
 //スプライト単体更新
-void SpriteUpdate(Sprite &sprite, const SpriteCommon &spriteCommon)
+void SpriteUpdate(Sprite& sprite, const SpriteCommon& spriteCommon)
 {
 	//ワールド行列の更新
 	sprite.matWorld = XMMatrixIdentity();
@@ -455,15 +458,15 @@ void SpriteUpdate(Sprite &sprite, const SpriteCommon &spriteCommon)
 	sprite.matWorld *= XMMatrixTranslation(sprite.position.x, sprite.position.y, sprite.position.z);
 
 	//定数バッファの転送
-	ConstBufferData *constMap = nullptr;
-	HRESULT result = sprite.constBuff->Map(0, nullptr, (void **)&constMap);
+	ConstBufferData* constMap = nullptr;
+	HRESULT result = sprite.constBuff->Map(0, nullptr, (void**)&constMap);
 	constMap->mat = sprite.matWorld * spriteCommon.matProjection;
 	constMap->color = sprite.color;
 	sprite.constBuff->Unmap(0, nullptr);
 }
 
 //スプライト共通グラフィックコマンドのセット
-void SpriteCommonBeginDraw(const SpriteCommon &spriteCommon, ID3D12GraphicsCommandList *cmdList)
+void SpriteCommonBeginDraw(const SpriteCommon& spriteCommon, ID3D12GraphicsCommandList* cmdList)
 {
 	//パイプラインステートの設定
 	cmdList->SetPipelineState(spriteCommon.pipelineSet.pipelinestate.Get());
@@ -473,13 +476,13 @@ void SpriteCommonBeginDraw(const SpriteCommon &spriteCommon, ID3D12GraphicsComma
 	cmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
 
 	//テクスチャ用デスクリプタヒープの設定
-	ID3D12DescriptorHeap *ppHeaps[] = { spriteCommon.descHeap.Get() };
+	ID3D12DescriptorHeap* ppHeaps[] = { spriteCommon.descHeap.Get() };
 	cmdList->SetDescriptorHeaps(_countof(ppHeaps), ppHeaps);
 }
 
 //スプライト単体描画
-void SpriteDraw(const Sprite &sprite, ID3D12GraphicsCommandList *cmdList, const SpriteCommon &spriteCommon,
-	ID3D12Device *dev)
+void SpriteDraw(const Sprite& sprite, ID3D12GraphicsCommandList* cmdList, const SpriteCommon& spriteCommon,
+	ID3D12Device* dev)
 {
 	//頂点バッファをセット
 	cmdList->IASetVertexBuffers(0, 1, &sprite.vbView);
@@ -507,26 +510,32 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	// DirectX初期化処理　ここから
 	//ポインタ置き場
-	WinApp *winApp = nullptr;
+	WinApp* winApp = nullptr;
 	winApp = new WinApp();
 	winApp->Initialize();
 
-	DirectXCommon *dxCommon = nullptr;
+	DirectXCommon* dxCommon = nullptr;
 	//DirectXの初期化
 	dxCommon = new DirectXCommon();
 	dxCommon->Initialize(winApp);
 
 	//入力
-	Input *input = nullptr;
+	Input* input = nullptr;
 	input = new Input();
 	input->Initialize(winApp->GetHInstance(), winApp->GetHwnd());
+
+	Camera* camera = nullptr;
+	camera = new Camera(winApp->window_width, winApp->window_height);
 
 	//モデルの静的初期化
 	Model::StaticInitialize(dxCommon->GetDev());
 	//3Dオブジェクト静的初期化
-	Object3d::StaticInitialize(dxCommon->GetDev(), WinApp::window_width, WinApp::window_height);
+	OBJobject::StaticInitialize(dxCommon->GetDev(), WinApp::window_width, WinApp::window_height, camera);
 
-
+	//FBX
+	FBXObject::SetDevice(dxCommon->GetDev());
+	FBXObject::SetCamera(camera);
+	FBXObject::CreateGraphicsPipline();
 
 	PipelineSet spritePipelineSet = SpriteCreateGraphicsPipeline(dxCommon->GetDev());
 	//スプライト共通データ
@@ -549,7 +558,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	SpriteCommonLoadTexture(spriteCommon, 18, L"Resources/8.png", dxCommon->GetDev());
 	SpriteCommonLoadTexture(spriteCommon, 19, L"Resources/9.png", dxCommon->GetDev());
 
-
+	//FBXの初期化
+	FbxLoader::GetInstance()->Initialize(dxCommon->GetDev());
 
 	// DirectX初期化処理　ここまで
 
@@ -597,19 +607,19 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	//変数宣言
 	/*モデル生成*/
-	Model *playermodel = Model::Create();
+	Model* playermodel = Model::Create();
 	playermodel->CreateFromOBJ("player");
-	Model *enemymodel = Model::Create();
+	Model* enemymodel = Model::Create();
 	enemymodel->CreateFromOBJ("enemy");
-	Model *titleModel = Model::Create();
+	Model* titleModel = Model::Create();
 	titleModel->CreateFromOBJ("title");
-	Model *endModel = Model::Create();
+	Model* endModel = Model::Create();
 	endModel->CreateFromOBJ("end");
 
-	Model *backModel1 = Model::Create();
+	Model* backModel1 = Model::Create();
 	backModel1->CreateFromOBJ("backb");
 
-	Model *ropeModel = Model::Create();
+	Model* ropeModel = Model::Create();
 	ropeModel->CreateFromOBJ("rope");
 
 	/*Model *zeroModel = Model::Create();
@@ -637,7 +647,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	/*3dオブジェクト生成*/
 	//プレイヤー
-	Object3d *playerobj = Object3d::Create();
+	OBJobject* playerobj = OBJobject::Create();
 	playerobj->SetModel(playermodel);
 	playerobj->SetScale({ 1.0f,1.0f,1.0f });
 	playerobj->SetPosition({ 0.0f,0.0f,0.0f });
@@ -646,10 +656,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	const int enemynum = 20;
 	int isenemy[enemynum] = { 0 };	//画面内にいる敵のかず
 	//isenemy[0] = 1;
-	Object3d *bardobj[enemynum];
+	OBJobject* bardobj[enemynum];
 	for (int i = 0; i < enemynum; i++)
 	{
-		bardobj[i] = Object3d::Create();
+		bardobj[i] = OBJobject::Create();
 		bardobj[i]->SetModel(enemymodel);
 		bardobj[i]->SetScale({ 1.0f,1.0f,1.0f });
 		bardobj[i]->SetPosition({ 0.0f,0.0f,0.0f });
@@ -657,27 +667,27 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	}
 	//UIとか
 	//タイトル
-	Object3d *titleobj = Object3d::Create();
+	OBJobject* titleobj = OBJobject::Create();
 	titleobj->SetModel(titleModel);
 	titleobj->SetScale({ 20.0f,20.0f,20.0f });
 	titleobj->SetPosition({ 0.0f,0.0f,0.0f });
 	titleobj->SetRotation({ -90.0f, 0.0f, 0.0f });
 	//タイトル用の背景
-	Object3d *backobj = Object3d::Create();
+	OBJobject* backobj = OBJobject::Create();
 	backobj->SetModel(backModel1);
 	backobj->SetScale({ 10.0f,10.0f,10.0f });
 	backobj->SetPosition({ 0.0f,0.0f,0.0f });
 	backobj->SetRotation({ -90.0f, 0.0f, 0.0f });
 
 	//えんど
-	Object3d *endobj = Object3d::Create();
+	OBJobject* endobj = OBJobject::Create();
 	endobj->SetModel(endModel);
 	endobj->SetScale({ 20.0f,20.0f,20.0f });
 	endobj->SetPosition({ 0.0f,0.0f,0.0f });
 	endobj->SetRotation({ -90.0f, 0.0f, 0.0f });
 
 	//ロープ
-	Object3d *ropeobj = Object3d::Create();
+	OBJobject* ropeobj = OBJobject::Create();
 	ropeobj->SetModel(ropeModel);
 	ropeobj->SetScale({ 2.0f,10.0f,2.0f });
 	ropeobj->SetPosition({ 1.5f,60.0f,-3.0f });
@@ -722,6 +732,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	bool hit = false;
 
 
+	//モデル名を指定してファイル読み込み
+	FbxLoader::GetInstance()->LoadModelFromFile("boneTest");
+
+	FbxModel* fbxmodel = nullptr;
+	FBXObject* fbxobject = nullptr;
+
+	fbxmodel = FbxLoader::GetInstance()->LoadModelFromFile("boneTest");
+	fbxobject = new FBXObject;
+	fbxobject->Initialize();
+	fbxobject->SetModel(fbxmodel);
+
+	camera->SetTarget({ 0,0,20 });
+	camera->SetEye({ 0,-0,-20 });
+
+	//fbxobject->PlayAnimetion();
 	while (true)  // ゲームループ
 	{
 		// ブロック内はページ右側を参照
@@ -736,32 +761,50 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		input->Update();
 
 
-#pragma region 更新処理
-
-
+#pragma region 更新処理		
+		fbxobject->Update();
 
 #pragma endregion
 
 		//プレイヤーの更新処理
 		XMFLOAT3 playerpos = playerobj->GetPosition();
+		XMFLOAT3 camerapos = { 0,0,0 };
+		float num = 0.1f;
 		if (input->PushKey(DIK_W))
 		{
 			playerpos.y += 1.0f;
+			camerapos.y += num;
 		}
 		if (input->PushKey(DIK_S))
 		{
 			playerpos.y -= 1.0f;
+			camerapos.y -= num;
 		}
 		if (input->PushKey(DIK_A))
 		{
 			playerpos.x -= 1.0f;
+			camerapos.x -= num;
 		}
 		if (input->PushKey(DIK_D))
 		{
 			playerpos.x += 1.0f;
+			camerapos.x += num;
 		}
-		playerobj->SetPosition(playerpos);
 
+		if (input->PushKey(DIK_Q))
+		{
+			playerpos.x -= 1.0f;
+			camerapos.z -= num;
+		}
+		if (input->PushKey(DIK_E))
+		{
+			playerpos.x += 1.0f;
+			camerapos.z += num;
+		}
+		//playerobj->SetPosition(playerpos);
+		camera->MoveVector(camerapos);
+
+		camera->Update();
 
 		//3Dオブジェクト更新
 		playerobj->Update();
@@ -795,12 +838,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		}
 
 		//3Dオブジェクト描画前処理
-		Object3d::PreDraw(dxCommon->GetCmdList());
+		OBJobject::PreDraw(dxCommon->GetCmdList());
 
 		if (scene == title)
 		{
-		//	titleobj->Draw();
-		//	playerobj->Draw();
+			//	titleobj->Draw();
+			//	playerobj->Draw();
 		}
 		else if (scene == game)
 		{
@@ -818,27 +861,27 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			{
 				if (isenemy[i] > 0)
 				{
-		//			bardobj[i]->Draw();
+					//			bardobj[i]->Draw();
 				}
 			}
 			if (hit)
 			{
-			//	backobj->Draw();
+				//	backobj->Draw();
 			}
 		}
 		else
 		{
 			SpriteCommonBeginDraw(spriteCommon, dxCommon->GetCmdList());
 
-		//	SpriteDraw(sprite, dxCommon->GetCmdList(), spriteCommon, dxCommon->GetDev());
-			//endobj->Draw();
+			//	SpriteDraw(sprite, dxCommon->GetCmdList(), spriteCommon, dxCommon->GetDev());
+				//endobj->Draw();
 		}
 
-		playerobj->Draw();
-
+		//playerobj->Draw();
+		fbxobject->Draw(dxCommon->GetCmdList());
 
 		//3Dオブジェクト描画後処理
-		Object3d::PostDraw();
+		OBJobject::PostDraw();
 		dxCommon->PostDraw();
 	}
 
@@ -854,5 +897,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	//3Dオブジェクト解放
 	delete playerobj;
 
+	//FBXの解放処理
+	FbxLoader::GetInstance()->Finalize();
 	return 0;
 }

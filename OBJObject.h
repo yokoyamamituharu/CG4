@@ -6,11 +6,12 @@
 #include <DirectXMath.h>
 #include <d3dx12.h>
 #include "Model.h"
+#include "Camera.h"
 
 /// <summary>
 /// 3Dオブジェクト
 /// </summary>
-class Object3d
+class OBJobject
 {
 private: // エイリアス
 	// Microsoft::WRL::を省略
@@ -65,7 +66,7 @@ public: // 静的メンバ関数
 	/// <param name="window_width">画面幅</param>
 	/// <param name="window_height">画面高さ</param>
 	/// <returns>成否</returns>
-	static bool StaticInitialize(ID3D12Device *device, int window_width, int window_height);
+	static bool StaticInitialize(ID3D12Device *device, int window_width, int window_height,Camera* camera);
 
 	/// <summary>
 	/// 描画前処理
@@ -82,37 +83,9 @@ public: // 静的メンバ関数
 	/// 3Dオブジェクト生成
 	/// </summary>
 	/// <returns></returns>
-	static Object3d *Create();
+	static OBJobject *Create();
 
-	/// <summary>
-	/// 視点座標の取得
-	/// </summary>
-	/// <returns>座標</returns>
-	static const XMFLOAT3 &GetEye() { return eye; }
 
-	/// <summary>
-	/// 視点座標の設定
-	/// </summary>
-	/// <param name="position">座標</param>
-	static void SetEye(XMFLOAT3 eye);
-
-	/// <summary>
-	/// 注視点座標の取得
-	/// </summary>
-	/// <returns>座標</returns>
-	static const XMFLOAT3 &GetTarget() { return target; }
-
-	/// <summary>
-	/// 注視点座標の設定
-	/// </summary>
-	/// <param name="position">座標</param>
-	static void SetTarget(XMFLOAT3 target);
-
-	/// <summary>
-	/// ベクトルによる移動
-	/// </summary>
-	/// <param name="move">移動量</param>
-	static void CameraMoveVector(XMFLOAT3 move);
 
 private: // 静的メンバ変数
 #pragma region 静的メンバ変数
@@ -128,28 +101,10 @@ private: // 静的メンバ変数
 	static ComPtr<ID3D12PipelineState> pipelinestate;
 
 
-	// ビュー行列
-	static XMMATRIX matView;
-	// 射影行列
-	static XMMATRIX matProjection;
-	// 視点座標
-	static XMFLOAT3 eye;
-	// 注視点座標
-	static XMFLOAT3 target;
-	// 上方向ベクトル
-	static XMFLOAT3 up;
 
 #pragma endregion
 private:// 静的メンバ関数
 
-
-
-	/// <summary>
-	/// カメラ初期化
-	/// </summary>
-	/// <param name="window_width">画面横幅</param>
-	/// <param name="window_height">画面縦幅</param>
-	static void InitializeCamera(int window_width, int window_height);
 
 	/// <summary>
 	/// グラフィックパイプライン生成
@@ -157,13 +112,7 @@ private:// 静的メンバ関数
 	/// <returns>成否</returns>
 	static bool InitializeGraphicsPipeline();
 
-	
-
-	/// <summary>
-	/// ビュー行列を更新
-	/// </summary>
-	static void UpdateViewMatrix();
-
+	static void SetCamera(Camera* camera) { OBJobject::camera = camera; }
 
 public: // メンバ関数
 	bool Initialize();
@@ -238,7 +187,9 @@ private: // メンバ変数
 	// ローカルワールド変換行列
 	XMMATRIX matWorld;
 	// 親オブジェクト
-	Object3d *parent = nullptr;
+	OBJobject *parent = nullptr;
+
+	static Camera* camera;
 
 public:
 	//モデルデータ

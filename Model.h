@@ -74,7 +74,7 @@ public:
 	/// </summary>
 	/// <param name="device">デバイス</param>
 	/// <returns>成否</returns>
-	static bool StaticInitialize(ID3D12Device *device);
+	static bool StaticInitialize(ID3D12Device* device);
 public:
 
 	/// <summary>
@@ -84,28 +84,28 @@ public:
 	bool InitializeDescriptorHeap();
 
 	//オブジェクトなんちゃら～
-	void CreateFromOBJ(const std::string modelname);
+	void CreateFromOBJ(const std::string& modelname);
 
 
 	/// <summary>
 	/// モデル作成
 	/// </summary>
-	void CreateModel(const std::string modelname);
+	void CreateModel(const std::string& modelname);
 
-	void LoadMaterial(const std::string &directroyPath, const std::string &filename);
+	void LoadMaterial(const std::string& directroyPath, const std::string& filename);
 	/// <summary>
 	/// テクスチャ読み込み
 	/// </summary>
 	/// <returns>成否</returns>
-	bool LoadTexture(const std::string &directoryPath, const std::string &filename);
+	bool LoadTexture(const std::string& directoryPath, const std::string& filename);
 
 
-	static Model *Create();
+	static Model* Create();
 
 	//変数
 public:
 	// デバイス
-	static ID3D12Device *device;
+	static ID3D12Device* device;
 	// デスクリプタヒープ
 	ComPtr<ID3D12DescriptorHeap> descHeap;
 	// デスクリプタサイズ

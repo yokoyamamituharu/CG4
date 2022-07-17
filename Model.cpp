@@ -10,9 +10,9 @@ using namespace std;
 
 using namespace DirectX;
 using namespace Microsoft::WRL;
-ID3D12Device *Model::device = nullptr;
+ID3D12Device* Model::device = nullptr;
 
-bool Model::StaticInitialize(ID3D12Device *device)
+bool Model::StaticInitialize(ID3D12Device* device)
 {
 	// nullptrチェック
 	assert(device);
@@ -22,10 +22,10 @@ bool Model::StaticInitialize(ID3D12Device *device)
 	return true;
 }
 
-Model *Model::Create()
+Model* Model::Create()
 {
 	//インスタンスを生成
-	Model *model = new Model();
+	Model* model = new Model();
 	if (model == nullptr)
 	{
 		return nullptr;
@@ -45,7 +45,7 @@ Model *Model::Create()
 }
 
 
-void Model::CreateFromOBJ(const std::string modelname)
+void Model::CreateFromOBJ(const std::string& modelname)
 {
 	InitializeDescriptorHeap();
 	CreateModel(modelname);
@@ -72,7 +72,7 @@ bool Model::InitializeDescriptorHeap()
 	return true;
 }
 
-void Model::CreateModel(const std::string modelname)
+void Model::CreateModel(const std::string& modelname)
 {
 	//ファイルストリーム
 	std::ifstream file;
@@ -232,8 +232,8 @@ void Model::CreateModel(const std::string modelname)
 	}
 
 	// 頂点バッファへのデータ転送
-	VertexPosNormalUv *vertMap = nullptr;
-	result = vertBuff->Map(0, nullptr, (void **)&vertMap);
+	VertexPosNormalUv* vertMap = nullptr;
+	result = vertBuff->Map(0, nullptr, (void**)&vertMap);
 	if (SUCCEEDED(result)) {
 		//memcpy(vertMap, vertices, sizeof(vertices));
 		std::copy(vertices.begin(), vertices.end(), vertMap);
@@ -241,8 +241,8 @@ void Model::CreateModel(const std::string modelname)
 	}
 
 	// インデックスバッファへのデータ転送
-	unsigned short *indexMap = nullptr;
-	result = indexBuff->Map(0, nullptr, (void **)&indexMap);
+	unsigned short* indexMap = nullptr;
+	result = indexBuff->Map(0, nullptr, (void**)&indexMap);
 	if (SUCCEEDED(result)) {
 
 		// 全インデックスに対して
@@ -268,7 +268,7 @@ void Model::CreateModel(const std::string modelname)
 	ibView.SizeInBytes = sizeIB;
 }
 
-void Model::LoadMaterial(const std::string &directoryPath, const std::string &filename)
+void Model::LoadMaterial(const std::string& directoryPath, const std::string& filename)
 {
 	//ファイルストリーム
 	std::ifstream file;
@@ -337,7 +337,7 @@ void Model::LoadMaterial(const std::string &directoryPath, const std::string &fi
 	file.close();
 }
 
-bool Model::LoadTexture(const std::string &directoryPath, const std::string &filename)
+bool Model::LoadTexture(const std::string& directoryPath, const std::string& filename)
 
 {
 	HRESULT result = S_FALSE;
@@ -361,7 +361,7 @@ bool Model::LoadTexture(const std::string &directoryPath, const std::string &fil
 		return result;
 	}
 
-	const Image *img = scratchImg.GetImage(0, 0, 0); // 生データ抽出
+	const Image* img = scratchImg.GetImage(0, 0, 0); // 生データ抽出
 
 	// リソース設定
 	CD3DX12_RESOURCE_DESC texresDesc = CD3DX12_RESOURCE_DESC::Tex2D(
