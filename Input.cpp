@@ -3,6 +3,12 @@
 
 #pragma comment(lib, "dinput8.lib")
 
+Input* Input::GetInstance()
+{
+	static Input instance;
+	return &instance;
+}
+
 bool Input::Initialize(HINSTANCE hInstance, HWND hwnd)
 {
 	HRESULT result = S_FALSE;

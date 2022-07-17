@@ -15,6 +15,9 @@ private: // エイリアス
 	// Microsoft::WRL::を省略
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 
+public://
+	static Input* GetInstance();
+
 public: // メンバ関数
 	/// <summary>
 	/// 初期化
