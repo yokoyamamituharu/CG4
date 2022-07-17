@@ -17,6 +17,11 @@ public:
 
     void Draw(ID3D12GraphicsCommandList* cmdList);
 
+private:
+    //パイプライン生成
+    void CreateGraphicsPipeLineState();
+
+
 private://静的メンバ変数
     //画面クリアカラー
     static const float clearColor[4];
@@ -32,5 +37,10 @@ private://メンバ変数
     ComPtr<ID3D12DescriptorHeap>descHeapRTV;
     //DSV用デスクリプタヒープ
     ComPtr<ID3D12DescriptorHeap>descHeapDSV;
+
+    //グラフィックスパイプライン
+    ComPtr<ID3D12PipelineState> pipelineState;
+    //ルートシグネチャ
+    ComPtr<ID3D12RootSignature> rootSignature;
 };
 

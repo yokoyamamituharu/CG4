@@ -121,7 +121,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	Sprite::LoadTexture(15, L"Resources/sora.png");
 
 	//ポストエフェクト用テクスチャの読み込み
-	Sprite::LoadTexture(100, L"Resources/white1x1.png");
+	//Sprite::LoadTexture(100, L"Resources/white1x1.png");
 	//ポストエフェクトの初期化
 	PostEffect* postEffect = nullptr;
 	postEffect = new PostEffect();
@@ -257,12 +257,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		//DirectX毎フレーム処理　ここまで
 
-
-		postEffect->PreDrawScene(dxCommon->GetCmdList());
-
 		Sprite::PreDraw(dxCommon->GetCmdList());
 		sprite1->Draw();
 		Sprite::PostDraw();
+
+
+		postEffect->PreDrawScene(dxCommon->GetCmdList());
 		//3Dオブジェクト描画前処理
 		OBJobject::PreDraw(dxCommon->GetCmdList());
 		//playerobj->Draw();
