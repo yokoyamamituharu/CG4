@@ -28,7 +28,7 @@ private://静的メンバ変数
 
 
 private://メンバ変数
-    ComPtr<ID3D12Resource>texBuff;
+    ComPtr<ID3D12Resource>texBuff[2];
     //SRV用デスクリプタヒープ
     ComPtr<ID3D12DescriptorHeap>descHeapSRV;
     //深度バッファ
