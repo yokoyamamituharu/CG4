@@ -258,11 +258,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		//DirectX毎フレーム処理　ここまで
 
 
+		postEffect->PreDrawScene(dxCommon->GetCmdList());
 
-
-		//描画処理
-		dxCommon->PreDraw();
-
+		Sprite::PreDraw(dxCommon->GetCmdList());
+		sprite1->Draw();
+		Sprite::PostDraw();
 		//3Dオブジェクト描画前処理
 		OBJobject::PreDraw(dxCommon->GetCmdList());
 		//playerobj->Draw();
@@ -270,13 +270,15 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		//3Dオブジェクト描画後処理
 		OBJobject::PostDraw();
 
-		Sprite::PreDraw(dxCommon->GetCmdList());
-		//sprite1->Draw();
-		//sprite2->Draw();
+		postEffect->PosDrawScene(dxCommon->GetCmdList());
 
-		Sprite::PostDraw();
+
+
+		//描画処理
+		dxCommon->PreDraw();
 
 		postEffect->Draw(dxCommon->GetCmdList());
+
 
 		dxCommon->PostDraw();
 	}
