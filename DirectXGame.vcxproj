@@ -207,6 +207,8 @@
     <ClInclude Include="Input.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="OBJObject.h" />
+    <ClInclude Include="PostEffect.h" />
+    <ClInclude Include="Sprite.h" />
     <ClInclude Include="Utility.h" />
     <ClInclude Include="WinApp.h" />
   </ItemGroup>
@@ -220,6 +222,8 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="Object3d.cpp" />
+    <ClCompile Include="PostEffect.cpp" />
+    <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="WinApp.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
