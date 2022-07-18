@@ -189,7 +189,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	fbxobject = new FBXObject;
 	fbxobject->Initialize();
 	fbxobject->SetModel(fbxmodel);
-	//fbxobject->PlayAnimetion();
+	fbxobject->PlayAnimetion();
 
 	camera->SetTarget({ 0,0,20 });
 	camera->SetEye({ 0,-0,-20 });

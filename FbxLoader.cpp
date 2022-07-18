@@ -191,6 +191,9 @@ void FbxLoader::ParseMeshFaces(FbxModel* model, FbxMesh* fbxMesh)
 	}
 }
 
+
+
+
 void FbxLoader::ParseMaterial(FbxModel* model, FbxNode* fbxNode)
 {
 	const int materialCount = fbxNode->GetMaterialCount();
@@ -272,6 +275,8 @@ std::string FbxLoader::ExtractFileName(const std::string& path)
 	return path;
 }
 
+
+
 void FbxLoader::ParseSkin(FbxModel* model, FbxMesh* fbxMesh)
 {
 	//スキニング情報
@@ -340,7 +345,7 @@ void FbxLoader::ParseSkin(FbxModel* model, FbxMesh* fbxMesh)
 			//頂点番号
 			int vertIndex = controlPointIndeice[j];
 			//スキンウエイト
-			float weight = (float)controlPointIndeice[j];
+			float weight = (float)constrolPointWeight[j];
 			//その頂点の影響を受けるボーンリストに、ボーンとウエイトのペアを追加
 			weightLists[vertIndex].emplace_back(WeightSet{ (UINT)i,weight });
 		}
