@@ -299,7 +299,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	//DirectX解放
 	delete dxCommon;
 	//入力の解放
-//	delete input;
+	delete input;
 	//3Dオブジェクト解放
 	delete playerobj;
 
