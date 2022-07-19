@@ -39,6 +39,8 @@ public://サブクラス
 
 
 public://静的メンバ関数
+	static bool StaticInitialize(ID3D12Device* device, Camera* camera);
+
 	static void SetDevice(ID3D12Device* device) { FBXObject::device = device; }
 	static void SetCamera(Camera* camera) { FBXObject::camera = camera; }
 	//グラッフィクパイプラインの生成

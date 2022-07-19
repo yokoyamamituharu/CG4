@@ -11,6 +11,17 @@ Camera* FBXObject::camera = nullptr;
 ComPtr<ID3D12RootSignature> FBXObject::rootsignature;
 ComPtr<ID3D12PipelineState> FBXObject::pipelinestate;
 
+bool FBXObject::StaticInitialize(ID3D12Device* device, Camera* camera)
+{
+	// nullptrチェック
+	assert(device);
+	FBXObject::device = device;
+	FBXObject::camera = camera;
+	CreateGraphicsPipline();
+
+	return true;
+}
+
 void FBXObject::CreateGraphicsPipline()
 {
 	HRESULT result = S_FALSE;
