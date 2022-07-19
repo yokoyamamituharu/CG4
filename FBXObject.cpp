@@ -279,15 +279,16 @@ void FBXObject::Update()
 	//定数バッファへのデータ転送
 	ConstBufferDataSkin* constMapSkin = nullptr;
 	result = constBuffSkin->Map(0, nullptr, (void**)&constMapSkin);
-	for (int i = 0; i < bones.size(); i++) {
-		//今の姿勢行列
-		XMMATRIX matCurrentPose;
-		//今の姿勢行列を取得
-		FbxAMatrix fbxCurrentPose = bones[i].fbxCluster->GetLink()->EvaluateGlobalTransform(currentTime);
-		//XMMATRIXに変換
-		FbxLoader::ConvertMatrixFromFbx(&matCurrentPose, fbxCurrentPose);
-		//合成してスキニング行列に
-		constMapSkin->bones[i] = bones[i].invInitialPos * matCurrentPose;
+	for (int i = 0; i < MAX_BONES; i++) {
+		////今の姿勢行列
+		//XMMATRIX matCurrentPose;
+		////今の姿勢行列を取得
+		//FbxAMatrix fbxCurrentPose = bones[i].fbxCluster->GetLink()->EvaluateGlobalTransform(currentTime);
+		////XMMATRIXに変換
+		//FbxLoader::ConvertMatrixFromFbx(&matCurrentPose, fbxCurrentPose);
+		////合成してスキニング行列に
+		//constMapSkin->bones[i] = bones[i].invInitialPos * matCurrentPose;
+		constMapSkin->bones[i] = XMMatrixIdentity();
 	}
 	constBuffSkin->Unmap(0, nullptr);
 }

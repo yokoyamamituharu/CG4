@@ -61,6 +61,9 @@ public:
 
 	void SetModel(FbxModel* model) { this->model = model; }
 
+public://ゲッター・セッター
+	void SetPos(XMFLOAT3 pos) { position = pos; }
+
 private:
 	static ID3D12Device* device;
 	static Camera* camera;

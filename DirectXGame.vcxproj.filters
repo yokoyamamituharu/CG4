@@ -24,22 +24,37 @@
     <FxCompile Include="BasicVS.hlsl">
       <Filter>シェーダーファイル</Filter>
     </FxCompile>
-    <FxCompile Include="SpriteVS.hlsl">
-      <Filter>シェーダーファイル</Filter>
-    </FxCompile>
-    <FxCompile Include="SpritePS.hlsl">
-      <Filter>シェーダーファイル</Filter>
+    <FxCompile Include="Resources\shaders\FBXPS.hlsl">
+      <Filter>リソース ファイル</Filter>
     </FxCompile>
     <FxCompile Include="Resources\shaders\FBXVS.hlsl">
       <Filter>リソース ファイル</Filter>
     </FxCompile>
-    <FxCompile Include="Resources\shaders\FBXPS.hlsl">
+    <FxCompile Include="Resources\shaders\OBJPixelShader.hlsl">
       <Filter>リソース ファイル</Filter>
     </FxCompile>
-    <FxCompile Include="Resources\shaders\PostEffectTestVS.hlsl">
+    <FxCompile Include="Resources\shaders\OBJVertexShader.hlsl">
       <Filter>リソース ファイル</Filter>
     </FxCompile>
-    <FxCompile Include="Resources\shaders\PostEffectTestPS.hlsl">
+    <FxCompile Include="Resources\shaders\PostEffectTestPS_GAUSSIAN.hlsl">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\PostEffectTestPS_MOZAIKU.hlsl">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\PostEffectTestPS_NONE.hlsl">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\PostEffectTestVS_GAUSSIAN.hlsl">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\PostEffectTestVS_NONE.hlsl">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="SpritePS.hlsl">
+      <Filter>リソース ファイル</Filter>
+    </FxCompile>
+    <FxCompile Include="SpriteVS.hlsl">
       <Filter>リソース ファイル</Filter>
     </FxCompile>
   </ItemGroup>
@@ -47,13 +62,19 @@
     <None Include="Basic.hlsli">
       <Filter>シェーダーファイル</Filter>
     </None>
-    <None Include="Sprite.hlsli">
-      <Filter>シェーダーファイル</Filter>
-    </None>
     <None Include="Resources\shaders\FBX.hlsli">
       <Filter>リソース ファイル</Filter>
     </None>
-    <None Include="Resources\shaders\PostEffectTest.hlsli">
+    <None Include="Resources\shaders\OBJShaderHeader.hlsli">
+      <Filter>リソース ファイル</Filter>
+    </None>
+    <None Include="Resources\shaders\PostEffectTest_GAUSSIAN.hlsli">
+      <Filter>リソース ファイル</Filter>
+    </None>
+    <None Include="Resources\shaders\PostEffectTest_NONE.hlsli">
+      <Filter>リソース ファイル</Filter>
+    </None>
+    <None Include="Sprite.hlsli">
       <Filter>リソース ファイル</Filter>
     </None>
   </ItemGroup>

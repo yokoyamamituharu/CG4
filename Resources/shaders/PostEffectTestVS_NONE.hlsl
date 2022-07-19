@@ -1,4 +1,4 @@
-#include "PostEffectTest.hlsli"
+#include "PostEffectTest_NONE.hlsli"
 
 VSOutput main(float4 pos : POSITION, float2 uv : TEXCOORD)
 {

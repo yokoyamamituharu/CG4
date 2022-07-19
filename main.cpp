@@ -106,8 +106,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 	//スプライト共通テクスチャ読み込み
 	Sprite::LoadTexture(0, L"Resources/texture.jpg");
-	Sprite::LoadTexture(1, L"Resources/sora.png");
-	Sprite::LoadTexture(2, L"Resources/make.png");
+	Sprite::LoadTexture(1, L"Resources/torisetu.png");
+	Sprite::LoadTexture(2, L"Resources/haiiro.png");
 	Sprite::LoadTexture(3, L"Resources/kati.png");
 	Sprite::LoadTexture(10, L"Resources/0.png");
 	Sprite::LoadTexture(11, L"Resources/1.png");
@@ -139,10 +139,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	Sprite* sprite1 = Sprite::Create(1, { 1,1 });
 
 	//スプライト
-	Sprite* sprite2 = Sprite::Create(12, { 100,100 });
+	Sprite* sprite2 = Sprite::Create(2, { 100,100 });
 	Sprite* sprite3 = Sprite::Create(11, { 100,200 });
 	Sprite* sprite4 = Sprite::Create(17, { 100,300 });
-	Sprite* sprite5 = Sprite::Create(14, { 100,400 });
+	Sprite* sprite5 = Sprite::Create(1, { 0,0 });
 
 
 
@@ -185,11 +185,12 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	FbxModel* fbxmodel = nullptr;
 	FBXObject* fbxobject = nullptr;
 
-	fbxmodel = FbxLoader::GetInstance()->LoadModelFromFile("boneTest");
+	fbxmodel = FbxLoader::GetInstance()->LoadModelFromFile("cube");
 	fbxobject = new FBXObject;
 	fbxobject->Initialize();
 	fbxobject->SetModel(fbxmodel);
 	fbxobject->PlayAnimetion();
+	fbxobject->SetPos({ 0,0,+80 });
 
 	camera->SetTarget({ 0,0,20 });
 	camera->SetEye({ 0,-0,-20 });
@@ -216,7 +217,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		//プレイヤーの更新処理
 		XMFLOAT3 playerpos = playerobj->GetPosition();
 		XMFLOAT3 camerapos = { 0,0,0 };
-		float num = 0.1;
+		float num = 0.8;
 		if (input->PushKey(DIK_W))
 		{
 			playerpos.y += 1.0f;
@@ -264,6 +265,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 
 		postEffect->PreDrawScene(dxCommon->GetCmdList());
+
+		Sprite::PreDraw(dxCommon->GetCmdList());
+		//sprite2->Draw();
+		Sprite::PostDraw();
 		//3Dオブジェクト描画前処理
 		OBJobject::PreDraw(dxCommon->GetCmdList());
 		//playerobj->Draw();
@@ -280,7 +285,9 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		postEffect->Draw(dxCommon->GetCmdList());
 
-
+		Sprite::PreDraw(dxCommon->GetCmdList());
+		sprite5->Draw();
+		Sprite::PostDraw();
 		dxCommon->PostDraw();
 	}
 
