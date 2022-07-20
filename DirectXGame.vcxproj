@@ -251,6 +251,7 @@
     <ClInclude Include="FBXObject.h" />
     <ClInclude Include="GameScene.h" />
     <ClInclude Include="Input.h" />
+    <ClInclude Include="InputMouse.h" />
     <ClInclude Include="Model.h" />
     <ClInclude Include="OBJObject.h" />
     <ClInclude Include="PostEffect.h" />
@@ -266,6 +267,7 @@
     <ClCompile Include="FBXObject.cpp" />
     <ClCompile Include="GameScene.cpp" />
     <ClCompile Include="Input.cpp" />
+    <ClCompile Include="InputMouse.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="Object3d.cpp" />

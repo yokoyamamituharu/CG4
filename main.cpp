@@ -1,5 +1,4 @@
 #pragma region include関連
-
 #include <DirectXTex.h>
 #include <DirectXMath.h>
 #include <d3dcompiler.h>
@@ -22,7 +21,6 @@
 #include "Sprite.h"
 #include "OBJobject.h"
 #include "FBXObject.h"
-#include "FbxLoader.h"
 #include "GameScene.h"
 
 #pragma comment(lib, "d3d12.lib")
@@ -34,6 +32,8 @@
 using namespace Microsoft::WRL;
 using namespace DirectX;
 #pragma endregion
+
+#include "InputMouse.h"
 
 //立方体の当たり判定
 bool CubeCollision(XMFLOAT3 object1, XMFLOAT3 radius1, XMFLOAT3 object2, XMFLOAT3 radius2) {
@@ -72,6 +72,10 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	Input* input = nullptr;
 	input = Input::GetInstance();
 	input->Initialize(winApp->GetHInstance(), winApp->GetHwnd());
+	//マウス
+	InputMouse* mouse = nullptr;
+	mouse = new InputMouse();
+	mouse->Initialize(winApp->GetHInstance(), winApp->GetHwnd());
 	//カメラ
 	Camera* camera = nullptr;
 	camera = new Camera(winApp->window_width, winApp->window_height);
@@ -83,7 +87,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	OBJobject::StaticInitialize(dxCommon->GetDev(), WinApp::window_width, WinApp::window_height, camera);
 	//FBX		
 	FbxLoader::GetInstance()->Initialize(dxCommon->GetDev());
-	FBXObject::StaticInitialize(dxCommon->GetDev(),camera);
+	FBXObject::StaticInitialize(dxCommon->GetDev(), camera);
 
 	//-----変数宣言-----//
 	//ポストエフェクトの初期化
@@ -95,6 +99,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	gameScene = new GameScene;
 	gameScene->Initialize(dxCommon, input, camera);
 
+	bool isSetMousePoint = false;	//マウスのポインタの位置を固定するかどうか
 	while (true)  // ゲームループ
 	{
 		// ブロック内はページ右側を参照
@@ -106,6 +111,26 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 		//-----更新処理-----//
 		//入力の更新処理
 		input->Update();
+		mouse->Update();
+		if (input->TriggerKey(DIK_M)) {	//Mキーを押されたらマウスポインターの移動を停止
+			if (isSetMousePoint) { isSetMousePoint = false; }
+			else { isSetMousePoint = true; }
+		}
+		if (isSetMousePoint) {
+			SetCursorPos(1280 / 2, 720 / 2);
+		}
+
+		//クリック確認用
+		if (mouse->PushMouse(MouseDIK::M_RIGHT))
+		{
+			int a = 0;
+		}
+		if (mouse->PushMouse(MouseDIK::M_LEFT))
+		{
+			int a = 0;
+		}
+
+
 		//シーンの更新
 		gameScene->Update();
 
