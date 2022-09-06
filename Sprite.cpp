@@ -294,21 +294,21 @@ void Sprite::PostDraw()
 	Sprite::cmdList = nullptr;
 }
 
-Sprite* Sprite::Create(UINT texNumber, XMFLOAT2 position, XMFLOAT4 color)
+Sprite* Sprite::Create(UINT texNumber, XMFLOAT2 position, XMFLOAT2 size, XMFLOAT4 color)
 {
 	// 仮サイズ
-	XMFLOAT2 size = { 100.0f, 100.0f };
-
+	//XMFLOAT2 size = { 100.0f, 100.0f };
+	XMFLOAT2 texSize;
 	if (texBuffer[texNumber])
 	{
 		// テクスチャ情報取得
 		D3D12_RESOURCE_DESC resDesc = texBuffer[texNumber]->GetDesc();
 		// スプライトのサイズをテクスチャのサイズに設定
-		size = { (float)resDesc.Width, (float)resDesc.Height };
+		texSize = { (float)resDesc.Width, (float)resDesc.Height };
 	}
 
 	// Spriteのインスタンスを生成
-	Sprite* sprite = new Sprite(texNumber, position, size, color);
+	Sprite* sprite = new Sprite(texNumber, position, size, color, texSize);
 	if (sprite == nullptr) {
 		return nullptr;
 	}
@@ -324,13 +324,14 @@ Sprite* Sprite::Create(UINT texNumber, XMFLOAT2 position, XMFLOAT4 color)
 }
 
 
-Sprite::Sprite(UINT texNumber, XMFLOAT2 position, XMFLOAT2 size, XMFLOAT4 color)
+Sprite::Sprite(UINT texNumber, XMFLOAT2 position, XMFLOAT2 size, XMFLOAT4 color, XMFLOAT2 texSize)
 {
 	this->position = position;
 	this->size = size;
 	this->matWorld = XMMatrixIdentity();
 	this->color = color;
 	this->texNumber = texNumber;
+	this->texSize = texSize;
 }
 
 bool Sprite::Initialize()
@@ -432,10 +433,21 @@ void Sprite::TransferVertices()
 	//左下、左上、右下、右上
 	enum { LB, LT, RB, RT };
 
-	vertices[LB].pos = { 0.0f,size.y,0.0f };//左下
+	vertices[LB].pos = { 0.0f,texSize.y * size.y,0.0f };//左下
 	vertices[LT].pos = { 0.0f,0.0f,0.0f };//左上
-	vertices[RB].pos = { size.x,size.y,0.0f };//右下
-	vertices[RT].pos = { size.x,0.0f,0.0f };//右上
+	vertices[RB].pos = { texSize.x * size.x,texSize.y * size.y,0.0f };//右下
+	vertices[RT].pos = { texSize.x * size.x,0.0f,0.0f };//右上
+
+
+	float tex_left = texLeftTop.x / texSize.x;
+	float tex_right = (texLeftTop.x + texCutSize.x) / texSize.x;
+	float tex_top = texLeftTop.y / texSize.y;
+	float tex_bottom = (texLeftTop.y + texCutSize.y) / texSize.y;
+
+	vertices[LB].uv = { tex_left,	tex_bottom }; // 左下
+	vertices[LT].uv = { tex_left,	tex_top }; // 左上
+	vertices[RB].uv = { tex_right,	tex_bottom }; // 右下
+	vertices[RT].uv = { tex_right,	tex_top }; // 右上
 
 	//頂点バッファへのデータ転送
 	VertexPosUv* vertMap = nullptr;

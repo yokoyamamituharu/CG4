@@ -34,6 +34,7 @@ using namespace DirectX;
 #pragma endregion
 
 #include "InputMouse.h"
+#include "DebugText.h"
 
 //立方体の当たり判定
 bool CubeCollision(XMFLOAT3 object1, XMFLOAT3 radius1, XMFLOAT3 object2, XMFLOAT3 radius2) {
@@ -100,6 +101,18 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	gameScene->Initialize(dxCommon, input, camera);
 
 	bool isSetMousePoint = false;	//マウスのポインタの位置を固定するかどうか
+
+	Sprite::LoadTexture(1, L"Resources/texture.png");
+	DebugText debugText;
+	debugText.Initialize(dxCommon->GetDev(), winApp->window_width, winApp->window_height, 1);
+
+	debugText.Print("Hello,DirectX!", 200, 100);
+	debugText.Print("koko benko", 400, 200, 2);
+
+	Sprite* sprite0 = Sprite::Create(1, { 0,0 });
+
+	sprite0->SetSize({ 5, 5 });
+
 	while (true)  // ゲームループ
 	{
 		// ブロック内はページ右側を参照
@@ -133,7 +146,8 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		//シーンの更新
 		gameScene->Update();
-
+		debugText.Print("Hello,DirectX!", 200, 100);
+		//debugText.Print("koko benko", 400, 200, 2);
 		//-----描画処理-----//
 		//ポストエフェクトの準備
 		//postEffect->PreDrawScene(dxCommon->GetCmdList());
@@ -141,7 +155,11 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 		dxCommon->PreDraw();
 		//postEffect->Draw(dxCommon->GetCmdList());		
-		gameScene->Draw();
+		//gameScene->Draw();
+		Sprite::PreDraw(dxCommon->GetCmdList());
+		debugText.DrawAll();
+		//sprite0->Draw();
+		Sprite::PostDraw();
 		dxCommon->PostDraw();
 	}
 

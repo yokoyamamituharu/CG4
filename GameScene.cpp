@@ -22,7 +22,7 @@ void GameScene::Initialize(DirectXCommon* dxCommon, Input* input, Camera* camera
 
 	//スプライト共通テクスチャ読み込み
 	Sprite::LoadTexture(0, L"Resources/texture.png");
-	Sprite::LoadTexture(1, L"Resources/torisetu.png");	
+	//Sprite::LoadTexture(1, L"Resources/torisetu.png");	
 
 	//スプライトの生成
 	spriteBG = Sprite::Create(0, {0.0f,0.0f});

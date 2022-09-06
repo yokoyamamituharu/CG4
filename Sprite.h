@@ -64,13 +64,21 @@ protected://メンバ変数
 	//座標
 	XMFLOAT2 position = { 0,0 };
 	//大きさ
-	XMFLOAT2 size = { 100,100 };
+	XMFLOAT2 size = { 1,1 };
 	//ワールド行列
 	XMMATRIX matWorld;
 	//色(RGBA)
 	XMFLOAT4 color = { 1,1,1,1 };
 	//テクスチャ番号
 	UINT texNumber = 0;
+	//読み込んだテクスチャのサイズ
+	XMFLOAT2 texSize;
+
+public:
+	//テクスチャ左上座標
+	XMFLOAT2 texLeftTop = { 0,0 };
+	//テクスチャの切り出すサイズ
+	XMFLOAT2 texCutSize = { 10000,10000 };
 
 public://静的メンバ関数
 	//静的初期化
@@ -86,18 +94,22 @@ public://静的メンバ関数
 	static void PostDraw();
 
 	//生成されたスプライト
-	static Sprite* Create(UINT texNumber, XMFLOAT2 position, XMFLOAT4 color = { 1, 1, 1, 1 });
+	static Sprite* Create(UINT texNumber, XMFLOAT2 position, XMFLOAT2 size = { 1,1 }, XMFLOAT4 color = { 1, 1, 1, 1 });
 
 public://メンバ関数
 
 	//コンストラクタ	
-	Sprite(UINT texNumber, XMFLOAT2 position, XMFLOAT2 size, XMFLOAT4 color);
+	Sprite(UINT texNumber, XMFLOAT2 position, XMFLOAT2 size, XMFLOAT4 color,XMFLOAT2 texSize);
 
 	//初期化	
 	bool Initialize();
 
 	//スプライト単体描画
 	void Draw();
+
+	//スプライトの場所設定
+	void SetPos(XMFLOAT2 pos) { position = pos; }
+	void SetSize(XMFLOAT2 size) { this->size = size; TransferVertices();}
 
 protected:
 	//頂点データ転送
